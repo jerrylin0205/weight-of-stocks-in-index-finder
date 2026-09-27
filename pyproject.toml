@@ -1,5 +1,5 @@
 [project]
-name = "stock-index-finder"
+name = "weight-of-stocks-in-index-finder"
 version = "0.1.0"
 description = "查詢一檔（或多檔）股票被納入哪些指數、追蹤該指數的 ETF，以及在指數中的權重"
 requires-python = ">=3.11"

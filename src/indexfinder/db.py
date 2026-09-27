@@ -4,8 +4,6 @@ import datetime as _dt
 import logging
 import time
 
-import pyodbc
-
 from . import dbconfig
 from .models import HoldingsSnapshot
 
@@ -70,6 +68,8 @@ class DB:
     KEEP_SNAPSHOTS = 2  # 每檔 ETF 保留幾次抓取（1 個現用 + 1 個可回溯/比對）
 
     def __init__(self, conn: str | None = None, schema: str | None = None, retries: int = 5):
+        import pyodbc  # 延遲載入：沒裝 ODBC driver 也能匯入這個模組（例如跑測試、CI）
+
         self.schema = schema or dbconfig.schema()
         cs = conn or dbconfig.conn_str()
         last: Exception | None = None

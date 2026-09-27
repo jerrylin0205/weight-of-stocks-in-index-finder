@@ -1,4 +1,9 @@
-# stock-index-finder
+# Weight of Stocks in Index Finder
+
+[![tests](https://github.com/jerrylin0205/weight-of-stocks-in-index-finder/actions/workflows/tests.yml/badge.svg)](https://github.com/jerrylin0205/weight-of-stocks-in-index-finder/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
+![SQL Server](https://img.shields.io/badge/database-SQL%20Server-CC2927)
 
 輸入股票代號 → 查它被納入哪些**指數**、追蹤該指數的 **ETF**、以及在指數中的**權重**。
 輸入多個代號 → 依「這些股票的權重總和」把指數排序，一眼看出一組持股集中在哪些指數 / ETF。
@@ -7,6 +12,21 @@
 每天自動更新，手機、筆電隨時能查。
 
 ![多代號查詢畫面](docs/screenshots/multi-query.png)
+
+## 目錄
+
+- [動機](#動機)
+- [這個專案展示什麼](#這個專案展示什麼)
+- [架構](#架構)
+- [截圖](#截圖)
+- [涵蓋範圍](#涵蓋範圍)
+- [安裝](#安裝)
+- [使用](#使用)
+- [資料來源](#資料來源)
+- [查詢邏輯](#查詢邏輯)
+- [專案結構](#專案結構)
+- [測試](#測試)
+- [License](#license)
 
 ## 動機
 
