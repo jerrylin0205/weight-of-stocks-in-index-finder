@@ -1,0 +1,22 @@
+ticker,name,weight,as_of
+# QQQ（Nasdaq-100）。這個 source 是 invesco，正常情況下 `indexfinder fetch --only QQQ`
+# 會直接抓到完整 100+ 檔（Invesco 每日公開 CSV）。只有在你的 IP 被 Invesco 的
+# Akamai 擋掉（會顯示 HTTP 406）時，才需要這個手動檔。
+#
+# 取得完整持股的方法（任一）：
+#   1. 從家用網路跑 `uv run indexfinder fetch --only QQQ`（住宅 IP 通常不會被擋）
+#   2. `uv run indexfinder fetch --only QQQ --browser`
+#   3. 瀏覽器開 https://www.invesco.com/us/financial-products/etfs/holdings/main/holdings/0?audienceType=Investor&action=download&ticker=QQQ
+#      下載 CSV，取 Holding Ticker / Name / Weight 三欄貼進來
+#
+# 以下為 2026-09-08 前 10 大，僅供沒有完整資料時的暫用：
+NVDA,NVIDIA Corp,8.69,2026-09-08
+AAPL,Apple Inc,7.39,2026-09-08
+MSFT,Microsoft Corp,5.85,2026-09-08
+MU,Micron Technology Inc,4.95,2026-09-08
+AMZN,Amazon.com Inc,4.40,2026-09-08
+AMD,Advanced Micro Devices Inc,3.62,2026-09-08
+GOOGL,Alphabet Inc Class A,3.14,2026-09-08
+TSLA,Tesla Inc,2.92,2026-09-08
+GOOG,Alphabet Inc Class C,2.91,2026-09-08
+META,Meta Platforms Inc,2.89,2026-09-08

@@ -1,0 +1,18 @@
+{
+  "net_assets": "489000000000",
+  "net_expense_ratio": "0.0018",
+  "portfolio_turnover": "n/a",
+  "dividend_yield": "0.0041",
+  "inception_date": "1999-03-10",
+  "last_updated": "2026-09-11 00:01 UTC",
+  "leveraged": "NO",
+  "sectors": [
+    {"sector": "INFORMATION TECHNOLOGY", "weight": "0.243"}
+  ],
+  "holdings": [
+    {"symbol": "NVDA", "description": "NVIDIA CORP", "weight": "0.0851"},
+    {"symbol": "AAPL", "description": "APPLE INC", "weight": "0.0741"},
+    {"symbol": "MSFT", "description": "MICROSOFT CORP", "weight": "0.06"},
+    {"symbol": "CASH", "description": "NET OTHER ASSETS", "weight": "0.0"}
+  ]
+}

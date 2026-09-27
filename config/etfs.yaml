@@ -1,0 +1,611 @@
+# ETF → 指數 對應表。
+#
+# 每列欄位：
+#   ticker          ETF 代號（必填）
+#   name            顯示名稱
+#   market          US / TW
+#   issuer          發行商
+#   index           指數名稱 —— 這是查詢結果的分組單位；多檔 ETF 可對到同一個 index
+#   index_provider  指數編製公司
+#   source          抓取來源，對應 sources.REGISTRY：
+#                     ishares  -> params.product_id（純數字，iShares 產品頁網址中的 id）
+#                     ssga     -> params.ssga_ticker（小寫，預設同 ticker）
+#                     invesco  -> params.invesco_ticker（預設同 ticker）
+#                     yuanta   -> params.fund_id（預設同 ticker）
+#                     manual   -> 讀 data/manual/<TICKER>.csv
+#   primary         true = 該指數的「代表性 ETF」，查詢權重以它的持股為準
+#
+# 加一檔美股 iShares ETF：到 ishares.com 找到產品頁，網址 /products/<id>/... 的 <id> 就是 product_id。
+
+etfs:
+  # ── 美股・大盤 / 綜合 ────────────────────────────────────────────
+  - ticker: IVV
+    name: iShares Core S&P 500 ETF
+    market: US
+    issuer: BlackRock
+    index: S&P 500
+    index_provider: S&P Dow Jones Indices
+    source: ishares
+    params: { product_id: 239726, expect_name: "S&P 500" }
+    primary: true
+  - ticker: SPY
+    name: SPDR S&P 500 ETF Trust
+    market: US
+    issuer: State Street
+    index: S&P 500
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+
+  - ticker: IJH
+    name: iShares Core S&P Mid-Cap ETF
+    market: US
+    issuer: BlackRock
+    index: S&P MidCap 400
+    index_provider: S&P Dow Jones Indices
+    source: ishares
+    params: { product_id: 239763, expect_name: "Mid-Cap" }
+    primary: true
+  - ticker: MDY
+    name: SPDR S&P MidCap 400 ETF Trust
+    market: US
+    issuer: State Street
+    index: S&P MidCap 400
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+
+  - ticker: IJR
+    name: iShares Core S&P Small-Cap ETF
+    market: US
+    issuer: BlackRock
+    index: S&P SmallCap 600
+    index_provider: S&P Dow Jones Indices
+    source: ishares
+    params: { product_id: 239774, expect_name: "Small-Cap" }
+    primary: true
+
+  - ticker: ITOT
+    name: iShares Core S&P Total U.S. Stock Market ETF
+    market: US
+    issuer: BlackRock
+    index: S&P Total Market Index
+    index_provider: S&P Dow Jones Indices
+    source: ishares
+    params: { product_id: 239724, expect_name: "Total" }
+    primary: true
+
+  - ticker: DIA
+    name: SPDR Dow Jones Industrial Average ETF Trust
+    market: US
+    issuer: State Street
+    index: Dow Jones Industrial Average
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+
+  - ticker: QQQ
+    name: Invesco QQQ Trust
+    market: US
+    issuer: Invesco
+    index: Nasdaq-100 Index
+    index_provider: Nasdaq
+    # Invesco 官方下載端點會擋資料中心 IP（見 sources/invesco.py）；改用
+    # Alpha Vantage ETF_PROFILE，QQQ 剛好在他們的 demo key 白名單裡可以直接用。
+    # 想換成有自己 key 的一般用法：加 params.av_key，或設環境變數 ALPHAVANTAGE_API_KEY。
+    source: alphavantage
+    params: { av_symbol: QQQ }
+    primary: true
+
+  # ── 美股・Russell 系列 ──────────────────────────────────────────
+  - ticker: IWB
+    name: iShares Russell 1000 ETF
+    market: US
+    issuer: BlackRock
+    index: Russell 1000 Index
+    index_provider: FTSE Russell
+    source: ishares
+    params: { product_id: 239707, expect_name: "Russell 1000 ETF" }
+    primary: true
+  - ticker: IWM
+    name: iShares Russell 2000 ETF
+    market: US
+    issuer: BlackRock
+    index: Russell 2000 Index
+    index_provider: FTSE Russell
+    source: ishares
+    params: { product_id: 239710, expect_name: "Russell 2000 ETF" }
+    primary: true
+  - ticker: IWV
+    name: iShares Russell 3000 ETF
+    market: US
+    issuer: BlackRock
+    index: Russell 3000 Index
+    index_provider: FTSE Russell
+    source: ishares
+    params: { product_id: 239714, expect_name: "Russell 3000" }
+    primary: true
+  - ticker: IWF
+    name: iShares Russell 1000 Growth ETF
+    market: US
+    issuer: BlackRock
+    index: Russell 1000 Growth Index
+    index_provider: FTSE Russell
+    source: ishares
+    params: { product_id: 239706, expect_name: "Russell 1000 Growth" }
+    primary: true
+  - ticker: IWD
+    name: iShares Russell 1000 Value ETF
+    market: US
+    issuer: BlackRock
+    index: Russell 1000 Value Index
+    index_provider: FTSE Russell
+    source: ishares
+    params: { product_id: 239708, expect_name: "Russell 1000 Value" }
+    primary: true
+  - ticker: IWN
+    name: iShares Russell 2000 Value ETF
+    market: US
+    issuer: BlackRock
+    index: Russell 2000 Value Index
+    index_provider: FTSE Russell
+    source: ishares
+    params: { product_id: 239712, expect_name: "Russell 2000 Value" }
+    primary: true
+  - ticker: IWO
+    name: iShares Russell 2000 Growth ETF
+    market: US
+    issuer: BlackRock
+    index: Russell 2000 Growth Index
+    index_provider: FTSE Russell
+    source: ishares
+    params: { product_id: 239709, expect_name: "Russell 2000 Growth" }
+    primary: true
+
+  # ── 美股・factor（iShares MSCI USA 單因子）────────────────────────
+  - ticker: MTUM
+    name: iShares MSCI USA Momentum Factor ETF
+    market: US
+    issuer: BlackRock
+    index: MSCI USA Momentum SR Variant Index
+    index_provider: MSCI
+    source: ishares
+    params: { product_id: 251614, expect_name: "Momentum" }
+    primary: true
+  - ticker: QUAL
+    name: iShares MSCI USA Quality Factor ETF
+    market: US
+    issuer: BlackRock
+    index: MSCI USA Sector Neutral Quality Index
+    index_provider: MSCI
+    source: ishares
+    params: { product_id: 256101, expect_name: "Quality" }
+    primary: true
+  - ticker: USMV
+    name: iShares MSCI USA Min Vol Factor ETF
+    market: US
+    issuer: BlackRock
+    index: MSCI USA Minimum Volatility Index
+    index_provider: MSCI
+    source: ishares
+    params: { product_id: 239695, expect_name: "Min Vol" }
+    primary: true
+  - ticker: VLUE
+    name: iShares MSCI USA Value Factor ETF
+    market: US
+    issuer: BlackRock
+    index: MSCI USA Enhanced Value Index
+    index_provider: MSCI
+    source: ishares
+    params: { product_id: 251616, expect_name: "Value Factor" }
+    primary: true
+  - ticker: SIZE
+    name: iShares MSCI USA Size Factor ETF
+    market: US
+    issuer: BlackRock
+    index: MSCI USA Low Size Index
+    index_provider: MSCI
+    source: ishares
+    params: { product_id: 251465, expect_name: "Size Factor" }
+    primary: true
+
+  # ── 美股・股息 ─────────────────────────────────────────────────
+  - ticker: DGRO
+    name: iShares Core Dividend Growth ETF
+    market: US
+    issuer: BlackRock
+    index: Morningstar US Dividend Growth Index
+    index_provider: Morningstar
+    source: ishares
+    params: { product_id: 264623, expect_name: "Dividend Growth" }
+    primary: true
+  - ticker: HDV
+    name: iShares Core High Dividend ETF
+    market: US
+    issuer: BlackRock
+    index: Morningstar Dividend Yield Focus Index
+    index_provider: Morningstar
+    source: ishares
+    params: { product_id: 239563, expect_name: "High Dividend" }
+    primary: true
+  - ticker: DVY
+    name: iShares Select Dividend ETF
+    market: US
+    issuer: BlackRock
+    index: Dow Jones U.S. Select Dividend Index
+    index_provider: S&P Dow Jones Indices
+    source: ishares
+    params: { product_id: 239500, expect_name: "Select Dividend" }
+    primary: true
+
+  # ── 美股・類股（SPDR Select Sector）────────────────────────────
+  - ticker: XLK
+    name: Technology Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Technology Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLF
+    name: Financial Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Financial Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLV
+    name: Health Care Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Health Care Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLY
+    name: Consumer Discretionary Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Consumer Discretionary Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLP
+    name: Consumer Staples Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Consumer Staples Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLE
+    name: Energy Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Energy Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLI
+    name: Industrial Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Industrial Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLB
+    name: Materials Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Materials Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLU
+    name: Utilities Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Utilities Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLRE
+    name: Real Estate Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Real Estate Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+  - ticker: XLC
+    name: Communication Services Select Sector SPDR Fund
+    market: US
+    issuer: State Street
+    index: Communication Services Select Sector Index
+    index_provider: S&P Dow Jones Indices
+    source: ssga
+    primary: true
+
+  # ── 台股 ──────────────────────────────────────────────────────
+  - ticker: "0050"
+    name: 元大台灣50
+    market: TW
+    issuer: 元大投信
+    index: 臺灣50指數
+    index_provider: FTSE Russell / 臺灣指數公司
+    source: yuanta
+    primary: true
+  - ticker: "0051"
+    name: 元大中型100
+    market: TW
+    issuer: 元大投信
+    index: 臺灣中型100指數
+    index_provider: FTSE Russell / 臺灣指數公司
+    source: yuanta
+    primary: true
+  - ticker: "0056"
+    name: 元大高股息
+    market: TW
+    issuer: 元大投信
+    index: 臺灣高股息指數
+    index_provider: FTSE Russell / 臺灣指數公司
+    source: yuanta
+    primary: true
+  - ticker: "00713"
+    name: 元大台灣高息低波
+    market: TW
+    issuer: 元大投信
+    index: 臺灣指數公司特選高股息低波動指數
+    index_provider: 臺灣指數公司
+    source: yuanta
+    primary: true
+  # ── 台股・其餘（SITCA 基金投資明細，季更、只含占淨值 ≥1% 的持股）──────
+  # params.sitca = 基金全名的獨特片段（要能唯一對到一檔）。加新的：
+  #   uv run indexfinder query <某成分股> --market TW  先確認沒被涵蓋，
+  #   再到 SITCA IN2630 找基金全名，填片段即可。
+  - ticker: "006208"
+    name: 富邦台50
+    market: TW
+    issuer: 富邦投信
+    index: 臺灣50指數
+    index_provider: FTSE Russell / 臺灣指數公司
+    source: sitca
+    params: { sitca: 富邦台灣釆吉50 }
+  - ticker: "006203"
+    name: 元大MSCI台灣
+    market: TW
+    issuer: 元大投信
+    index: MSCI 臺灣指數
+    index_provider: MSCI
+    source: sitca
+    params: { sitca: 元大摩臺 }
+    primary: true
+  - ticker: "006204"
+    name: 永豐臺灣加權
+    market: TW
+    issuer: 永豐投信
+    index: 臺灣加權股價指數 (TAIEX)
+    index_provider: 臺灣證券交易所
+    source: sitca
+    params: { sitca: 永豐臺灣加權 }
+    primary: true
+  - ticker: "0052"
+    name: 富邦科技
+    market: TW
+    issuer: 富邦投信
+    index: 臺灣資訊科技指數
+    index_provider: FTSE Russell / 臺灣指數公司
+    source: sitca
+    params: { sitca: 富邦台灣科技指數 }
+    primary: true
+  - ticker: "00692"
+    name: 富邦公司治理
+    market: TW
+    issuer: 富邦投信
+    index: 臺灣公司治理100指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 富邦臺灣公司治理 }
+    primary: true
+  - ticker: "00850"
+    name: 元大臺灣ESG永續
+    market: TW
+    issuer: 元大投信
+    index: 臺灣永續指數
+    index_provider: FTSE Russell / 臺灣指數公司
+    source: sitca
+    params: { sitca: 元大臺灣ESG永續ETF }
+    primary: true
+  - ticker: "00728"
+    name: 第一金工業菁英30
+    market: TW
+    issuer: 第一金投信
+    index: 臺灣工業菁英30指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 第一金臺灣工業菁英30 }
+    primary: true
+  - ticker: "00733"
+    name: 富邦臺灣中小
+    market: TW
+    issuer: 富邦投信
+    index: 臺灣中小型A級動能50指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 富邦臺灣中小A級動能50 }
+    primary: true
+  - ticker: "00690"
+    name: 兆豐藍籌30
+    market: TW
+    issuer: 兆豐投信
+    index: 藍籌30指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 兆豐臺灣藍籌30 }
+    primary: true
+  - ticker: "00921"
+    name: 兆豐龍頭等權重
+    market: TW
+    issuer: 兆豐投信
+    index: 特選臺灣產業龍頭存股等權重指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 兆豐台灣產業龍頭存股等權重 }
+    primary: true
+
+  # 半導體 / 科技主題
+  - ticker: "00891"
+    name: 中信關鍵半導體
+    market: TW
+    issuer: 中國信託投信
+    index: ICE FactSet 台灣ESG永續關鍵半導體指數
+    index_provider: ICE Data Indices
+    source: sitca
+    params: { sitca: 中國信託臺灣ESG永續關鍵半導體 }
+    primary: true
+  - ticker: "00892"
+    name: 富邦台灣半導體
+    market: TW
+    issuer: 富邦投信
+    index: ICE FactSet 台灣核心半導體指數
+    index_provider: ICE Data Indices
+    source: sitca
+    params: { sitca: 富邦台灣核心半導體 }
+    primary: true
+  - ticker: "00913"
+    name: 兆豐台灣晶圓製造
+    market: TW
+    issuer: 兆豐投信
+    index: ICE FactSet 台灣ESG永續晶圓製造供應鏈指數
+    index_provider: ICE Data Indices
+    source: sitca
+    params: { sitca: 兆豐特選台灣晶圓製造 }
+    primary: true
+  - ticker: "00881"
+    name: 國泰台灣科技龍頭
+    market: TW
+    issuer: 國泰投信
+    index: 臺灣科技龍頭指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 國泰台灣科技龍頭 }
+    primary: true
+  - ticker: "00927"
+    name: 群益半導體收益
+    market: TW
+    issuer: 群益投信
+    index: 特選臺灣上市上櫃半導體收益指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 群益台灣半導體收益 }
+    primary: true
+
+  # 高股息
+  - ticker: "00878"
+    name: 國泰永續高股息
+    market: TW
+    issuer: 國泰投信
+    index: MSCI 臺灣 ESG 永續高股息精選30指數
+    index_provider: MSCI
+    source: sitca
+    params: { sitca: 台灣ESG永續高股息ETF基金 }
+    primary: true
+  - ticker: "00900"
+    name: 富邦特選高股息30
+    market: TW
+    issuer: 富邦投信
+    index: 特選臺灣上市上櫃高股息30指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 富邦特選台灣高股息30 }
+    primary: true
+  - ticker: "00915"
+    name: 凱基優選高股息30
+    market: TW
+    issuer: 凱基投信
+    index: 臺灣多因子優選高股息30指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 凱基台灣優選高股息30 }
+    primary: true
+  - ticker: "00918"
+    name: 大華優利高填息30
+    market: TW
+    issuer: 大華銀投信
+    index: 特選臺灣優選股利高填息30指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 大華銀台灣優選股利高填息30 }
+    primary: true
+  - ticker: "00919"
+    name: 群益台灣精選高息
+    market: TW
+    issuer: 群益投信
+    index: 臺灣精選高息指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 群益台灣精選高息 }
+    primary: true
+  - ticker: "00929"
+    name: 復華台灣科技優息
+    market: TW
+    issuer: 復華投信
+    index: 臺灣科技優息指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 復華台灣科技優息 }
+    primary: true
+  - ticker: "00934"
+    name: 中信成長高股息
+    market: TW
+    issuer: 中國信託投信
+    index: 臺灣優選成長高股息報酬指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 中國信託臺灣優選成長高股息 }
+    primary: true
+  - ticker: "00944"
+    name: 野村趨勢動能高息
+    market: TW
+    issuer: 野村投信
+    index: 特選臺灣趨勢動能高股息指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 野村臺灣趨勢動能高股息 }
+    primary: true
+  - ticker: "00939"
+    name: 統一台灣高息動能
+    market: TW
+    issuer: 統一投信
+    index: 特選臺灣高息動能指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 統一台灣高息動能 }
+    primary: true
+  - ticker: "00940"
+    name: 元大臺灣價值高息
+    market: TW
+    issuer: 元大投信
+    index: 臺灣價值高息指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 元大臺灣價值高息 }
+    primary: true
+  - ticker: "00922"
+    name: 國泰台灣領袖50
+    market: TW
+    issuer: 國泰投信
+    index: MSCI 臺灣領袖50精選指數
+    index_provider: MSCI
+    source: sitca
+    params: { sitca: 國泰台灣領袖 }
+    primary: true
+  - ticker: "00923"
+    name: 群益台灣ESG低碳50
+    market: TW
+    issuer: 群益投信
+    index: 臺灣ESG低碳目標指數
+    index_provider: 臺灣指數公司
+    source: sitca
+    params: { sitca: 群益台灣ESG低碳50 }
+    primary: true

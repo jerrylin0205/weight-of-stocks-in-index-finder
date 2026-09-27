@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>股票指數 / ETF 查詢</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main>
+    <header>
+      <h1>股票 → 指數 / ETF 查詢</h1>
+      <p class="sub">
+        輸入一或多個股票代號，查它被納入哪些指數、追蹤該指數的 ETF，以及在指數中的權重。
+        多個代號時依「輸入股票的權重總和」排序。
+      </p>
+    </header>
+
+    <form id="form">
+      <div class="row">
+        <input
+          id="tickers"
+          type="text"
+          placeholder="例：AAPL   或   AAPL MSFT NVDA   或   2330 2317"
+          autocomplete="off"
+          autofocus
+        />
+        <select id="market" title="市場篩選">
+          <option value="">全部市場</option>
+          <option value="US">美股</option>
+          <option value="TW">台股</option>
+        </select>
+        <button type="submit">查詢</button>
+      </div>
+      <div class="examples">
+        範例：
+        <button type="button" data-q="NVDA">NVDA</button>
+        <button type="button" data-q="AAPL MSFT GOOGL AMZN META">科技五雄</button>
+        <button type="button" data-q="2330" data-m="TW">2330</button>
+        <button type="button" data-q="2330 2317 2454" data-m="TW">台積 鴻海 聯發科</button>
+      </div>
+    </form>
+
+    <div id="status" class="status" hidden></div>
+    <div id="results"></div>
+
+    <section id="coverage"></section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

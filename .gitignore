@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/holdings.db
+data/raw/
+data/*.log
+config/tw_etfs.generated.yaml
+.pytest_cache/
+.DS_Store
+data/*.png
+data/manual/*.csv
